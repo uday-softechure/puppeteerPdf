@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate PDF</title>
+</head>
+<body>
+    <h1>Generate PDF from URL</h1>
+    <form id="pdfForm">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" required>
+        <button type="submit">Generate PDF</button>
+    </form>
+
+    <script>
+        document.getElementById('pdfForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+
+            const url = document.getElementById('url').value;
+            if (url) {
+                fetch(`/generate-pdf?url=${encodeURIComponent(url)}`)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'document.pdf';
+                        link.click();
+                    })
+                    .catch(error => {
+                        console.error('Error generating PDF:', error);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
